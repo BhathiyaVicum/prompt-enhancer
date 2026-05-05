@@ -1,7 +1,16 @@
 import React from 'react';
+import { useState } from 'react';
 import { FaHandSparkles } from "react-icons/fa";
 
 export function PromptInput() {
+
+    const [length, setLength] = useState(0);
+
+    const handleTextChange = (e) => {
+        const text = e.target.value;
+        setLength(text.length);
+    }
+
     return (
 
         <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700 hover:border-blue-500/50 transition-all duration-300">
@@ -17,6 +26,7 @@ export function PromptInput() {
                     maxHeight: '300px',
                     height: '250px'
                 }}
+                onChange={handleTextChange}
             />
 
             <div className="flex flex-wrap gap-2 mt-2">

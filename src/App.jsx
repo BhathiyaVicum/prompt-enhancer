@@ -1,6 +1,7 @@
 import { Header } from "./components/Header";
 import { PromptInput } from "./components/PromptInput";
 import { PromptOutput } from "./components/PromptOutput";
+import { HistoryPanel } from "./components/HistoryPanel";
 
 function App() {
     return (
@@ -13,8 +14,9 @@ function App() {
                     <PromptInput />
                     <PromptOutput />
                 </div>
-                
+                <HistoryPanel />
             </main>
+            
         </div>
     )
 }
