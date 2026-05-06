@@ -65,6 +65,7 @@ export function PromptInput({ rawPrompt, setRawPrompt, setEnhancedPrompt, setHis
                 }}
                 value={rawPrompt}
                 onChange={handleTextChange}
+                maxLength={500}
             />
 
             {error && (
