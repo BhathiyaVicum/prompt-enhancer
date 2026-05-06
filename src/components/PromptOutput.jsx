@@ -1,8 +1,8 @@
 import { FaCopy, FaRegTimesCircle } from "react-icons/fa";
-import { HiSparkles} from "react-icons/hi2";
+import { HiSparkles } from "react-icons/hi2";
 import { useState } from "react";
 
-export function PromptOutput({ enhancedPrompt, isLoading }) {
+export function PromptOutput({ enhancedPrompt, isLoading, setEnhancedPrompt, setRawPrompt }) {
 
     const [copied, setCopied] = useState(false);
 
@@ -14,20 +14,31 @@ export function PromptOutput({ enhancedPrompt, isLoading }) {
         setTimeout(() => setCopied(false), 2000);
     }
 
+    const clearAll = () => {
+        setRawPrompt('');
+        setCopied(false);
+        setEnhancedPrompt('');
+    }
+
     // Show loading state when waiting for enhanced prompt
     if (isLoading) {
         return (
             <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700">
                 <div className="flex justify-between items-center mb-4">
-                    <h2 className="font-semibold text-white uppercase tracking-wider">ENHANCED PROMPT</h2>
+                    <h2 className="font-semibold text-white uppercase tracking-wider">
+                        ENHANCED PROMPT
+                    </h2>
                 </div>
-                <div className="text-center py-12">
-                    <div className="inline-block animate-spin rounded-full border-4 border-blue-500/30 border-t-blue-500 h-10 w-10 mb-4"></div>
+
+                <div className="flex flex-col items-center justify-center h-64 text-center">
+                    <div className="animate-spin rounded-full border-4 border-blue-500/30 border-t-blue-500 h-10 w-10 mb-4"></div>
                     <p className="text-gray-400">Enhancing your prompt...</p>
-                    <p className="text-xs text-gray-500 mt-1">Adding structure and context</p>
+                    <p className="text-xs text-gray-500 mt-1">
+                        Adding structure and context
+                    </p>
                 </div>
             </div>
-        )
+        );
     }
 
     // when no prompt has been enhanced yet
@@ -68,7 +79,9 @@ export function PromptOutput({ enhancedPrompt, isLoading }) {
                     className="flex-1 flex items-center justify-center gap-2 bg-gray-700/80 text-gray-300 px-4 py-2 rounded hover:bg-gray-600 transition-all duration-200 cursor-pointer" >
                     <FaCopy /> {copied ? "Copied!" : "Copy"}
                 </button>
-                <button className="flex-1 flex items-center justify-center gap-2 bg-gray-700/80 text-gray-300 px-4 py-2 rounded hover:bg-gray-600 transition-all duration-200 cursor-pointer">
+                <button
+                    onClick={clearAll}
+                    className="flex-1 flex items-center justify-center gap-2 bg-gray-700/80 text-gray-300 px-4 py-2 rounded hover:bg-gray-600 transition-all duration-200 cursor-pointer">
                     <FaRegTimesCircle /> Clear
                 </button>
             </div>

@@ -1,5 +1,5 @@
-const API_KEY = import.meta.env.VITE_GEMINI_API_KEY
-const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent";
+const API_KEY = import.meta.env.VITE_GROQ_API_KEY
+const API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 export const enhancePrompt = async (rawPrompt) => {
 
@@ -12,33 +12,38 @@ export const enhancePrompt = async (rawPrompt) => {
     console.log("RAW PROMPT:", rawPrompt);
     console.log("URL:", API_URL);
 
-    console.log("ENV TEST:", import.meta.env);
-
     try {
-        const response = await fetch(`${API_URL}?key=${API_KEY}`, {
+        const response = await fetch(API_URL, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${API_KEY}`
             },
             body: JSON.stringify({
-                contents: [{
-                    parts: [{
-
-                        text: `You are an expert prompt engineer. Rewrite and improve the user's prompt to make it clearer, more specific, and more effective for AI systems. Do NOT repeat the original prompt. Return ONLY the improved version. User prompt: "${rawPrompt}"`
-
-                    }]
-                }]
+                model: "llama-3.3-70b-versatile",
+                messages: [
+                    {
+                        role: "system",
+                        content: "You are an expert prompt engineer. Rewrite and improve user prompts to make them clearer, more specific, and more effective for AI systems."
+                    },
+                    {
+                        role: "user",
+                        content: `Rewrite and improve this prompt. Do NOT repeat the original prompt. Return ONLY the improved version, no explanations. User prompt: "${rawPrompt}"`
+                    }
+                ],
+                temperature: 0.7,
+                max_tokens: 500
             })
         })
 
         if (!response.ok) {
             const errorText = await response.text();
             console.error("API ERROR RESPONSE:", errorText);
-            throw new Error(errorText);
+            throw new Error(`API error: ${response.status}`);
         }
 
         const data = await response.json();
-        return data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "No response generated.";
+        return data?.choices?.[0]?.message?.content?.trim() || "No response generated.";
     } catch (error) {
         console.error('Error enhancing prompt:', error);
         return mockEnhancement(rawPrompt);
@@ -46,21 +51,5 @@ export const enhancePrompt = async (rawPrompt) => {
 }
 
 const mockEnhancement = (rawPrompt) => {
-    return `You are an expert prompt engineer.
-
-    Rewrite the following prompt to make it clearer, more specific, and more effective for AI systems.
-
-    Do NOT repeat the original prompt.
-
-    Improve it by:
-    - clarifying intent
-    - adding necessary context
-    - making instructions more specific
-    - improving structure and readability
-    - removing ambiguity
-
-    User prompt:
-    "${rawPrompt}"
-
-    Return ONLY the improved prompt.`
+    return `Enhanced: "${rawPrompt}"`
 }

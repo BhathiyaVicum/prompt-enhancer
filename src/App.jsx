@@ -33,6 +33,8 @@ function App() {
                     <PromptOutput 
                         enhancedPrompt={enhancedPrompt}
                         isLoading={isLoading}
+                        setEnhancedPrompt={setEnhancedPrompt}
+                        setRawPrompt={setRawPrompt}
                     />
                 </div>
                 
