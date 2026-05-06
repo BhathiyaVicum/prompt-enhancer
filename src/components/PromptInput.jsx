@@ -1,14 +1,51 @@
 import React from 'react';
 import { useState } from 'react';
-import { FaHandSparkles } from "react-icons/fa";
+import { HiSparkles } from "react-icons/hi2";
+import { enhancePrompt } from "../utils/api";
 
-export function PromptInput() {
+export function PromptInput({ rawPrompt, setRawPrompt, setEnhancedPrompt, setHistory, setIsLoading }) {
 
     const [length, setLength] = useState(0);
+    const [error, setError] = useState("");
 
     const handleTextChange = (e) => {
         const text = e.target.value;
+        setRawPrompt(text);
         setLength(text.length);
+    }
+
+    const handleEnhanceClick = async () => {
+
+        if (!rawPrompt.trim()) {
+            setError("Please enter a prompt to enhance.");
+            return;
+        }
+        setError("");
+
+        setIsLoading(true);
+
+        console.log("Button clicked");
+
+        try {
+            // call gemini Api
+            const result = await enhancePrompt(rawPrompt);
+            setEnhancedPrompt(result);
+
+            const newHistoryItem = {
+                id: Date.now(),
+                raw: rawPrompt,
+                enhanced: result,
+                timestamp: new Date().toISOString()
+            }
+
+            setHistory(prev => [newHistoryItem, ...prev].slice(0, 10)); // keep only last 10 items
+
+        } catch (error) {
+            alert("Error enhancing prompt. Please try again.");
+        } finally {
+            setIsLoading(false);
+        }
+
     }
 
     return (
@@ -26,14 +63,21 @@ export function PromptInput() {
                     maxHeight: '300px',
                     height: '250px'
                 }}
+                value={rawPrompt}
                 onChange={handleTextChange}
             />
 
+            {error && (
+                <p className="text-red-500 text-sm mt-2">{error}</p>
+            )}
+
             <div className="flex flex-wrap gap-2 mt-2">
                 <button
+                    onClick={handleEnhanceClick}
                     className="flex items-center justify-center gap-2 bg-blue-500 w-full hover:bg-blue-400 text-white px-4 py-2 rounded transition-colors duration-300 cursor-pointer"
+                    
                 >
-                    <FaHandSparkles /> Enhance Prompt
+                    <HiSparkles /> Enhance Prompt
                 </button>
             </div>
 
