@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'  // ← ADD useEffect
+import { useState, useEffect } from 'react'
 import { PromptInput } from "./components/PromptInput"
 import { PromptOutput } from "./components/PromptOutput"
 import { HistoryPanel } from "./components/HistoryPanel"
@@ -30,8 +30,9 @@ function App() {
         localStorage.setItem('promptHistory', JSON.stringify(history))
     }, [history])
 
-    const handleLoadPrompt = (promptText) => {
-        setRawPrompt(promptText)
+    const handleLoadPrompt = (item) => {
+        setRawPrompt(item.raw)
+        setEnhancedPrompt(item.enhanced)
         window.scrollTo({ top: 0, behavior: 'smooth' })
     }
 
@@ -53,6 +54,7 @@ function App() {
                         isLoading={isLoading}
                         setEnhancedPrompt={setEnhancedPrompt}
                         setRawPrompt={setRawPrompt}
+                        setHistory={setHistory}
                     />
                 </div>
                 

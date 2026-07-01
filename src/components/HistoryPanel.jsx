@@ -55,7 +55,7 @@ export function HistoryPanel({ history, setHistory, onLoadPrompt }) {
                     >
                         <div
                             className="flex-1 cursor-pointer"
-                            onClick={() => onLoadPrompt(item.raw)}
+                            onClick={() => onLoadPrompt(item)}
                         >
                             <p className="text-sm text-gray-300 mb-1 line-clamp-2">
                                 {item.raw}
